@@ -1,6 +1,7 @@
 import SwiftUI
 import Charts
 import DeviceActivity
+import FamilyControls
 
 // Context shared with the report extension (same raw string)
 extension DeviceActivityReport.Context {
@@ -9,26 +10,26 @@ extension DeviceActivityReport.Context {
 
 struct HistoryView: View {
     @Environment(ScreenDriftStore.self) var store
-    @State private var reportFilter = Self.todayFilter()
+    @Environment(\.openURL) private var openURL
+    // Start the chart scrolled so the last 7 days are visible
+    @State private var chartScrollDate: Date = Calendar.current.date(
+        byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())
+    ) ?? Date()
+    @State private var isSyncing = false
 
-    private static func todayFilter() -> DeviceActivityFilter {
-        let today = Calendar.current.dateInterval(of: .day, for: .now) ?? DateInterval()
-        return DeviceActivityFilter(segment: .daily(during: today))
-    }
-
-    private static func weekFilter() -> DeviceActivityFilter {
-        let week = Calendar.current.dateInterval(of: .weekOfYear, for: .now) ?? DateInterval()
-        return DeviceActivityFilter(segment: .daily(during: week))
+    /// Last 30 days filter so we pull in a full month of historical Screen Time data.
+    private static func last7DaysFilter() -> DeviceActivityFilter {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: calendar.date(byAdding: .day, value: -29, to: Date())!)
+        let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date()))!
+        return DeviceActivityFilter(segment: .daily(during: DateInterval(start: start, end: end)))
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    if store.isAuthorized {
-                        autoReportSection
-                    }
-
+                    screenTimeSection
                     chartCard
                     summaryRow
                     logListSection
@@ -43,39 +44,112 @@ struct HistoryView: View {
         }
     }
 
-    // MARK: - Auto Report (DeviceActivityReport embedded view)
+    // MARK: - Screen Time Section (always shown, adapts to auth state)
 
-    private var autoReportSection: some View {
+    private var screenTimeSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("This Week's Breakdown")
-                    .font(.headline)
+                Text("Screen Time").font(.headline)
                 Spacer()
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-                    .font(.caption)
-                Text("Live")
-                    .font(.caption.bold())
-                    .foregroundStyle(.green)
+                syncBadge
             }
 
-            // Apple's built-in report — rendered by the DeviceActivity report extension.
-            // When this view renders, the extension's makeConfiguration() runs and
-            // writes updated data to App Groups.
-            DeviceActivityReport(.totalActivity, filter: Self.weekFilter())
-                .frame(minHeight: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+            if store.isAuthorized {
+                // Apple's privacy-preserving report. When rendered, the extension's
+                // makeConfiguration() runs and writes daily data to App Groups.
+                DeviceActivityReport(.totalActivity, filter: Self.last7DaysFilter())
+                    .frame(minHeight: 120)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .task {
+                        isSyncing = true
+                        // Extension runs async — wait for it to write dailyMinutes
+                        try? await Task.sleep(for: .seconds(4))
+                        store.refreshFromAppGroups()
+                        isSyncing = false
+                    }
+            } else {
+                permissionWarning
+            }
         }
         .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
+    @ViewBuilder
+    private var syncBadge: some View {
+        if !store.isAuthorized {
+            let isDenied = store.authorizationStatus == .denied
+            Label(isDenied ? "Access Denied" : "No Access",
+                  systemImage: isDenied ? "xmark.shield.fill" : "exclamationmark.shield.fill")
+                .font(.caption.bold())
+                .foregroundStyle(.red)
+        } else if isSyncing {
+            HStack(spacing: 5) {
+                ProgressView().scaleEffect(0.75)
+                Text("Syncing…").font(.caption.bold()).foregroundStyle(.orange)
+            }
+        } else if let updated = store.autoLastUpdated {
+            HStack(spacing: 4) {
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).font(.caption)
+                Text("Updated \(updated, style: .relative) ago")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        } else {
+            HStack(spacing: 4) {
+                Image(systemName: "clock").font(.caption).foregroundStyle(.secondary)
+                Text("Waiting for data").font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var permissionWarning: some View {
+        let isDenied = store.authorizationStatus == .denied
+        let color: Color = isDenied ? .red : .orange
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Image(systemName: isDenied ? "xmark.shield.fill" : "exclamationmark.shield.fill")
+                    .foregroundStyle(color)
+                    .font(.title3)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(isDenied ? "Screen Time Access Denied" : "Permission Required")
+                        .font(.subheadline.bold())
+                    Text(isDenied
+                         ? "Go to Settings → Privacy & Security → Screen Time and allow Screen Drift."
+                         : "Grant access so Screen Drift can read your daily usage history from iOS Screen Time.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Button {
+                if isDenied {
+                    if let url = URL(string: "app-settings:") { openURL(url) }
+                } else {
+                    Task { await store.requestAuthorization() }
+                }
+            } label: {
+                Text(isDenied ? "Open Settings" : "Grant Access")
+                    .font(.subheadline.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(color)
+                    .foregroundStyle(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+        .padding()
+        .background(color.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(color.opacity(0.2), lineWidth: 1))
+    }
+
     // MARK: - Chart (our custom chart using archived log data)
 
-    private var last7Days: [(date: Date, minutes: Int)] {
+    private var last30Days: [(date: Date, minutes: Int)] {
         let calendar = Calendar.current
-        return (0..<7).compactMap { daysAgo -> (Date, Int)? in
+        return (0..<30).compactMap { daysAgo -> (Date, Int)? in
             guard let date = calendar.date(byAdding: .day, value: -daysAgo, to: Date()) else { return nil }
             let mins = store.logs.first { calendar.isDate($0.date, inSameDayAs: date) }?.minutes ?? 0
             return (date, mins)
@@ -85,17 +159,22 @@ struct HistoryView: View {
     private var chartCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text(store.isAuthorized ? "Your 7-day Trend" : "Last 7 Days")
+                Text("Daily Usage")
                     .font(.headline)
                 Spacer()
-                if !store.isAuthorized {
-                    Text("Manual data")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                if isSyncing {
+                    HStack(spacing: 4) {
+                        ProgressView().scaleEffect(0.7)
+                        Text("Loading…").font(.caption2).foregroundStyle(.orange)
+                    }
+                } else {
+                    Text("← scroll")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
                 }
             }
 
-            let maxY = max(store.targetMinutes, last7Days.map(\.minutes).max() ?? 0, 60)
+            let maxY = max(store.targetMinutes, last30Days.map(\.minutes).max() ?? 0, 60)
 
             Chart {
                 RuleMark(y: .value("Target", store.targetMinutes))
@@ -107,7 +186,7 @@ struct HistoryView: View {
                             .foregroundStyle(Color.accentColor)
                     }
 
-                ForEach(last7Days, id: \.date) { item in
+                ForEach(last30Days, id: \.date) { item in
                     BarMark(
                         x: .value("Day", item.date, unit: .day),
                         y: .value("Minutes", item.minutes)
@@ -118,8 +197,9 @@ struct HistoryView: View {
             }
             .chartYScale(domain: 0...maxY)
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { _ in
-                    AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                AxisMarks(values: .stride(by: .day)) { value in
+                    AxisGridLine()
+                    AxisValueLabel(format: .dateTime.weekday(.narrow).day(), centered: true)
                 }
             }
             .chartYAxis {
@@ -133,6 +213,9 @@ struct HistoryView: View {
                     }
                 }
             }
+            .chartScrollableAxes(.horizontal)
+            .chartXVisibleDomain(length: 7 * 24 * 60 * 60)
+            .chartScrollPosition(x: $chartScrollDate)
             .frame(height: 200)
 
             HStack(spacing: 16) {

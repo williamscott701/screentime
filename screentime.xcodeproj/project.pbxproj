@@ -6,11 +6,107 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		374052792F7FE75A0028D8C3 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374052782F7FE75A0028D8C3 /* WidgetKit.framework */; };
+		3740527B2F7FE75A0028D8C3 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3740527A2F7FE75A0028D8C3 /* SwiftUI.framework */; };
+		3740528C2F7FE75C0028D8C3 /* ScreenDriftWidgetExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 374052762F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		374052942F80A4180028D8C3 /* ScreenDriftReport.appex in CopyFiles */ = {isa = PBXBuildFile; fileRef = 374052602F7FE57E0028D8C3 /* ScreenDriftReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3740526A2F7FE57E0028D8C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37C22A6A2F7CB571002E45B1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3740525F2F7FE57E0028D8C3;
+			remoteInfo = ScreenDriftReport;
+		};
+		3740528A2F7FE75C0028D8C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37C22A6A2F7CB571002E45B1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 374052752F7FE75A0028D8C3;
+			remoteInfo = ScreenDriftWidgetExtensionExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3740526D2F7FE57E0028D8C3 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374052912F7FE75C0028D8C3 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3740528C2F7FE75C0028D8C3 /* ScreenDriftWidgetExtensionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374052932F80A3B90028D8C3 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Extensions;
+			dstSubfolderSpec = 1;
+			files = (
+				374052942F80A4180028D8C3 /* ScreenDriftReport.appex in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		374052602F7FE57E0028D8C3 /* ScreenDriftReport.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = ScreenDriftReport.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		374052762F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenDriftWidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		374052782F7FE75A0028D8C3 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		3740527A2F7FE75A0028D8C3 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		374052922F7FE8070028D8C3 /* ScreenDriftWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScreenDriftWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
 		37C22A722F7CB571002E45B1 /* screentime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = screentime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		374052702F7FE57E0028D8C3 /* Exceptions for "ScreenDriftReport" folder in "ScreenDriftReport" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3740525F2F7FE57E0028D8C3 /* ScreenDriftReport */;
+		};
+		3740528D2F7FE75C0028D8C3 /* Exceptions for "ScreenDriftWidgetExtension" folder in "ScreenDriftWidgetExtensionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 374052752F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		374052612F7FE57E0028D8C3 /* ScreenDriftReport */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				374052702F7FE57E0028D8C3 /* Exceptions for "ScreenDriftReport" folder in "ScreenDriftReport" target */,
+			);
+			path = ScreenDriftReport;
+			sourceTree = "<group>";
+		};
+		3740527C2F7FE75A0028D8C3 /* ScreenDriftWidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3740528D2F7FE75C0028D8C3 /* Exceptions for "ScreenDriftWidgetExtension" folder in "ScreenDriftWidgetExtensionExtension" target */,
+			);
+			path = ScreenDriftWidgetExtension;
+			sourceTree = "<group>";
+		};
 		37C22A742F7CB571002E45B1 /* screentime */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = screentime;
@@ -19,6 +115,22 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3740525D2F7FE57E0028D8C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374052732F7FE75A0028D8C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3740527B2F7FE75A0028D8C3 /* SwiftUI.framework in Frameworks */,
+				374052792F7FE75A0028D8C3 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		37C22A6F2F7CB571002E45B1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,10 +141,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		374052772F7FE75A0028D8C3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				374052782F7FE75A0028D8C3 /* WidgetKit.framework */,
+				3740527A2F7FE75A0028D8C3 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		37C22A692F7CB571002E45B1 = {
 			isa = PBXGroup;
 			children = (
+				374052922F7FE8070028D8C3 /* ScreenDriftWidgetExtensionExtension.entitlements */,
 				37C22A742F7CB571002E45B1 /* screentime */,
+				374052612F7FE57E0028D8C3 /* ScreenDriftReport */,
+				3740527C2F7FE75A0028D8C3 /* ScreenDriftWidgetExtension */,
+				374052772F7FE75A0028D8C3 /* Frameworks */,
 				37C22A732F7CB571002E45B1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +166,8 @@
 			isa = PBXGroup;
 			children = (
 				37C22A722F7CB571002E45B1 /* screentime.app */,
+				374052602F7FE57E0028D8C3 /* ScreenDriftReport.appex */,
+				374052762F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +175,50 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3740525F2F7FE57E0028D8C3 /* ScreenDriftReport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 374052712F7FE57E0028D8C3 /* Build configuration list for PBXNativeTarget "ScreenDriftReport" */;
+			buildPhases = (
+				3740525C2F7FE57E0028D8C3 /* Sources */,
+				3740525D2F7FE57E0028D8C3 /* Frameworks */,
+				3740525E2F7FE57E0028D8C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				374052612F7FE57E0028D8C3 /* ScreenDriftReport */,
+			);
+			name = ScreenDriftReport;
+			packageProductDependencies = (
+			);
+			productName = ScreenDriftReport;
+			productReference = 374052602F7FE57E0028D8C3 /* ScreenDriftReport.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
+		374052752F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3740528E2F7FE75C0028D8C3 /* Build configuration list for PBXNativeTarget "ScreenDriftWidgetExtensionExtension" */;
+			buildPhases = (
+				374052722F7FE75A0028D8C3 /* Sources */,
+				374052732F7FE75A0028D8C3 /* Frameworks */,
+				374052742F7FE75A0028D8C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3740527C2F7FE75A0028D8C3 /* ScreenDriftWidgetExtension */,
+			);
+			name = ScreenDriftWidgetExtensionExtension;
+			packageProductDependencies = (
+			);
+			productName = ScreenDriftWidgetExtensionExtension;
+			productReference = 374052762F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		37C22A712F7CB571002E45B1 /* screentime */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37C22A7D2F7CB572002E45B1 /* Build configuration list for PBXNativeTarget "screentime" */;
@@ -55,10 +226,15 @@
 				37C22A6E2F7CB571002E45B1 /* Sources */,
 				37C22A6F2F7CB571002E45B1 /* Frameworks */,
 				37C22A702F7CB571002E45B1 /* Resources */,
+				3740526D2F7FE57E0028D8C3 /* Embed ExtensionKit Extensions */,
+				374052912F7FE75C0028D8C3 /* Embed Foundation Extensions */,
+				374052932F80A3B90028D8C3 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3740526B2F7FE57E0028D8C3 /* PBXTargetDependency */,
+				3740528B2F7FE75C0028D8C3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				37C22A742F7CB571002E45B1 /* screentime */,
@@ -80,6 +256,12 @@
 				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
+					3740525F2F7FE57E0028D8C3 = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					374052752F7FE75A0028D8C3 = {
+						CreatedOnToolsVersion = 26.4;
+					};
 					37C22A712F7CB571002E45B1 = {
 						CreatedOnToolsVersion = 26.4;
 					};
@@ -100,11 +282,27 @@
 			projectRoot = "";
 			targets = (
 				37C22A712F7CB571002E45B1 /* screentime */,
+				3740525F2F7FE57E0028D8C3 /* ScreenDriftReport */,
+				374052752F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3740525E2F7FE57E0028D8C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374052742F7FE75A0028D8C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		37C22A702F7CB571002E45B1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +313,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3740525C2F7FE57E0028D8C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374052722F7FE75A0028D8C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		37C22A6E2F7CB571002E45B1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +336,140 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3740526B2F7FE57E0028D8C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3740525F2F7FE57E0028D8C3 /* ScreenDriftReport */;
+			targetProxy = 3740526A2F7FE57E0028D8C3 /* PBXContainerItemProxy */;
+		};
+		3740528B2F7FE75C0028D8C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 374052752F7FE75A0028D8C3 /* ScreenDriftWidgetExtensionExtension */;
+			targetProxy = 3740528A2F7FE75C0028D8C3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		3740526E2F7FE57E0028D8C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ScreenDriftReport/ScreenDriftReport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 24TAVFAQ48;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScreenDriftReport/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScreenDriftReport;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ScreenDrift.ScreenDriftReport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3740526F2F7FE57E0028D8C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ScreenDriftReport/ScreenDriftReport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 24TAVFAQ48;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScreenDriftReport/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScreenDriftReport;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ScreenDrift.ScreenDriftReport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3740528F2F7FE75C0028D8C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ScreenDriftWidgetExtensionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 24TAVFAQ48;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScreenDriftWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScreenDriftWidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ScreenDrift.ScreenDriftWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		374052902F7FE75C0028D8C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ScreenDriftWidgetExtensionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 24TAVFAQ48;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScreenDriftWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScreenDriftWidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ScreenDrift.ScreenDriftWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		37C22A7B2F7CB572002E45B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -313,6 +658,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		374052712F7FE57E0028D8C3 /* Build configuration list for PBXNativeTarget "ScreenDriftReport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3740526E2F7FE57E0028D8C3 /* Debug */,
+				3740526F2F7FE57E0028D8C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3740528E2F7FE75C0028D8C3 /* Build configuration list for PBXNativeTarget "ScreenDriftWidgetExtensionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3740528F2F7FE75C0028D8C3 /* Debug */,
+				374052902F7FE75C0028D8C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		37C22A6D2F7CB571002E45B1 /* Build configuration list for PBXProject "screentime" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

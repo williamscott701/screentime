@@ -18,7 +18,7 @@ struct DashboardView: View {
     private var statusMessage: (text: String, color: Color) {
         guard store.todayMinutes > 0 else {
             return (store.isAuthorized
-                    ? "Checking your screen time…"
+                    ? "No usage logged yet today"
                     : "Authorize to track usage automatically",
                     .secondary)
         }
@@ -248,14 +248,15 @@ struct DashboardView: View {
                 .animation(.easeInOut(duration: 0.6), value: store.progressFraction)
             VStack(spacing: 4) {
                 if store.isOverTarget {
-                    Text("+\((store.todayMinutes - store.targetMinutes).formattedDuration)")
-                        .font(.system(size: 38, weight: .bold, design: .rounded))
+                    let over = store.todayMinutes - store.targetMinutes
+                    Text("+\(over.formattedDuration)")
+                        .font(.system(size: 34, weight: .bold, design: .rounded))
                         .foregroundStyle(.red)
                     Text("over limit").font(.subheadline).foregroundStyle(.secondary)
                 } else if store.todayMinutes == 0 {
-                    Image(systemName: store.isAuthorized ? "clock.arrow.2.circlepath" : "lock")
+                    Image(systemName: store.isAuthorized ? "checkmark.circle" : "lock")
                         .font(.system(size: 40)).foregroundStyle(.secondary)
-                    Text(store.isAuthorized ? "Loading…" : "Not tracking")
+                    Text(store.isAuthorized ? "0m used" : "Not tracking")
                         .font(.subheadline).foregroundStyle(.secondary)
                 } else {
                     Text(store.remainingMinutes.formattedDuration)
@@ -275,13 +276,11 @@ struct DashboardView: View {
             statCard(title: "Used",
                      value: store.todayMinutes > 0 ? store.todayMinutes.formattedDuration : "–",
                      icon: "hourglass", color: progressColor)
+            statCard(title: "Remaining",
+                     value: store.isOverTarget ? "0m" : store.remainingMinutes.formattedDuration,
+                     icon: "timer", color: store.isOverTarget ? .red : progressColor)
             statCard(title: "Target", value: store.targetMinutes.formattedDuration,
                      icon: "target", color: .blue)
-            if let avg = store.weeklyAverage {
-                statCard(title: "7-day Avg", value: avg.formattedDuration, icon: "chart.bar", color: .purple)
-            } else if let avg = store.last3DaysAverage {
-                statCard(title: "3-day Avg", value: avg.formattedDuration, icon: "chart.bar", color: .purple)
-            }
         }
     }
 

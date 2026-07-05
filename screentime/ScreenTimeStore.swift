@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Observation
 import FamilyControls
+import WidgetKit
 
 // MARK: - Data Model
 
@@ -77,15 +78,53 @@ class ScreenDriftStore {
 
     /// Call this when the app becomes active or the report view loads.
     func refreshFromAppGroups() {
+        // Force read from disk (extension writes from a different process)
+        defaults.synchronize()
+
+        // Always check if the extension has reported, even if today's minutes are 0
+        if let ts = defaults.object(forKey: "autoLastUpdated") as? Double {
+            autoLastUpdated = Date(timeIntervalSinceReferenceDate: ts)
+        }
+
         let newMinutes = defaults.integer(forKey: "autoTodayMinutes")
         if newMinutes > 0 {
             autoTodayMinutes = newMinutes
-            if let ts = defaults.object(forKey: "autoLastUpdated") as? Double {
-                autoLastUpdated = Date(timeIntervalSinceReferenceDate: ts)
-            }
             archiveTodayIfNeeded(minutes: newMinutes)
         }
+
+        refreshDailyLogs()
         authorizationStatus = AuthorizationCenter.shared.authorizationStatus
+    }
+
+    /// Merges per-day data written by the DeviceActivity extension into logs.
+    private func refreshDailyLogs() {
+        guard let data = defaults.data(forKey: "dailyMinutes"),
+              let dailyMinutes = try? JSONDecoder().decode([String: Int].self, from: data)
+        else { return }
+
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        formatter.timeZone = TimeZone.current
+        var changed = false
+
+        for (dayKey, minutes) in dailyMinutes {
+            guard minutes > 0, let date = formatter.date(from: dayKey) else { continue }
+            if let index = logs.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: date) }) {
+                if logs[index].minutes != minutes {
+                    logs[index].minutes = minutes
+                    changed = true
+                }
+            } else {
+                logs.insert(DailyLog(date: date, minutes: minutes), at: 0)
+                changed = true
+            }
+        }
+
+        if changed {
+            logs = logs.sorted { $0.date > $1.date }
+            logs = Array(logs.prefix(90))
+            save()
+        }
     }
 
     /// Archives today's auto-read value into the logs array for history + suggestion calculations.
@@ -120,6 +159,7 @@ class ScreenDriftStore {
         if let encoded = try? JSONEncoder().encode(logs) {
             defaults.set(encoded, forKey: "logs")
         }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     // MARK: - Today

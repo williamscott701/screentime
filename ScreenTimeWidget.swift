@@ -11,11 +11,9 @@
 //    in the new ScreenDriftWidgetExtension group, then drag
 //    THIS file into that group.
 //
-// 3. Add App Groups to BOTH targets:
-//    - Select "screentime" target → Signing & Capabilities
-//      → + Capability → App Groups → add:
-//        group.com.screendrift.shared
-//    - Repeat for "ScreenDriftWidgetExtension" target
+// 3. Add App Groups to the ScreenDriftWidgetExtension target:
+//    Signing & Capabilities → + Capability → App Groups
+//    → add: group.com.screendrift.shared
 //
 // 4. Build & run. Long-press home screen → Edit → + widget
 //    → search "Screen Drift".
@@ -54,6 +52,10 @@ struct ScreenDriftEntry: TimelineEntry {
     let targetMinutes: Int
 
     var remainingMinutes: Int { max(0, targetMinutes - usedMinutes) }
+    var remainingSeconds: TimeInterval { TimeInterval(remainingMinutes * 60) }
+
+    /// End of remaining time — used to drive the live countdown Text view
+    var countdownEndDate: Date { date.addingTimeInterval(remainingSeconds) }
 
     var progressFraction: Double {
         guard targetMinutes > 0 else { return 0 }
@@ -84,7 +86,8 @@ struct ScreenDriftProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ScreenDriftEntry>) -> Void) {
         let entry = makeEntry()
-        let refresh = Calendar.current.date(byAdding: .minute, value: 30, to: Date()) ?? Date()
+        // Refresh every 15 minutes so the countdown stays reasonably accurate
+        let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date()
         completion(Timeline(entries: [entry], policy: .after(refresh)))
     }
 
@@ -94,8 +97,13 @@ struct ScreenDriftProvider: TimelineProvider {
         let target = saved > 0 ? saved : 240
 
         var used = 0
-        if let data = defaults.data(forKey: "logs"),
-           let logs = try? JSONDecoder().decode([WidgetDailyLog].self, from: data) {
+
+        // Prefer auto-tracked value from DeviceActivity extension
+        let autoMinutes = defaults.integer(forKey: "autoTodayMinutes")
+        if autoMinutes > 0 {
+            used = autoMinutes
+        } else if let data = defaults.data(forKey: "logs"),
+                  let logs = try? JSONDecoder().decode([WidgetDailyLog].self, from: data) {
             used = logs.first { Calendar.current.isDateInToday($0.date) }?.minutes ?? 0
         }
 
@@ -109,10 +117,10 @@ struct SmallWidgetView: View {
     let entry: ScreenDriftEntry
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.15), lineWidth: 10)
+                    .stroke(Color.primary.opacity(0.1), lineWidth: 10)
                 Circle()
                     .trim(from: 0, to: entry.progressFraction)
                     .stroke(entry.progressColor,
@@ -120,17 +128,24 @@ struct SmallWidgetView: View {
                     .rotationEffect(.degrees(-90))
 
                 VStack(spacing: 1) {
-                    Text(entry.isOverTarget ? "OVER" : entry.remainingMinutes.formattedDuration)
-                        .font(.system(size: 15, weight: .bold, design: .rounded))
-                        .foregroundStyle(entry.isOverTarget ? .red : .primary)
-                    if !entry.isOverTarget {
+                    if entry.isOverTarget {
+                        Text("OVER")
+                            .font(.system(size: 13, weight: .bold, design: .rounded))
+                            .foregroundStyle(.red)
+                    } else {
+                        // Live countdown — updates every second automatically
+                        Text(timerInterval: entry.date...entry.countdownEndDate, countsDown: true)
+                            .font(.system(size: 13, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(entry.progressColor)
+                            .minimumScaleFactor(0.7)
                         Text("left")
                             .font(.system(size: 9, weight: .medium))
                             .foregroundStyle(.secondary)
                     }
                 }
             }
-            .frame(width: 76, height: 76)
+            .frame(width: 80, height: 80)
 
             Text("Screen Drift")
                 .font(.system(size: 10, weight: .semibold))
@@ -146,10 +161,10 @@ struct MediumWidgetView: View {
 
     var body: some View {
         HStack(spacing: 20) {
-            // Progress ring
+            // Progress ring with live countdown
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.15), lineWidth: 12)
+                    .stroke(Color.primary.opacity(0.1), lineWidth: 12)
                 Circle()
                     .trim(from: 0, to: entry.progressFraction)
                     .stroke(entry.progressColor,
@@ -157,12 +172,23 @@ struct MediumWidgetView: View {
                     .rotationEffect(.degrees(-90))
 
                 VStack(spacing: 2) {
-                    Text(entry.isOverTarget ? "OVER" : entry.remainingMinutes.formattedDuration)
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundStyle(entry.isOverTarget ? .red : .primary)
-                    Text(entry.isOverTarget ? "limit" : "remaining")
-                        .font(.system(size: 10))
-                        .foregroundStyle(.secondary)
+                    if entry.isOverTarget {
+                        Text("OVER")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundStyle(.red)
+                        Text("limit")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(timerInterval: entry.date...entry.countdownEndDate, countsDown: true)
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(entry.progressColor)
+                            .minimumScaleFactor(0.6)
+                        Text("remaining")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .frame(width: 100, height: 100)
@@ -181,7 +207,7 @@ struct MediumWidgetView: View {
 
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
-                        Capsule().fill(Color.white.opacity(0.12))
+                        Capsule().fill(Color.primary.opacity(0.1))
                         Capsule()
                             .fill(entry.progressColor)
                             .frame(width: geo.size.width * entry.progressFraction)
